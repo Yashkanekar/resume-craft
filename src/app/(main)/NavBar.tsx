@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
 import UserButton from "@/components/common/UserButton";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function NavBar() {
   return (
@@ -17,7 +18,10 @@ export default function NavBar() {
           />
           <span className="text-xl font-bold tracking-tight">Resume-Craft</span>
         </Link>
-        <UserButton />
+        <div className="flex items-centre gap-3">
+          <ThemeToggle />
+          <UserButton />
+        </div>
       </div>
     </header>
   );
