@@ -21,20 +21,40 @@ model Resume {
   title       String?
   description String?
 
-  photoUrl    String?
-  colorHex    String  @default("#000000")
-  borderStyle String  @default("squircle")
-  summary     String?
-  firstName   String?
-  lastName    String?
-  jobTitle    String?
-  city        String?
-  country     String?
-  phone       String?
-  email       String?
+  photoUrl        String?
+  colorHex        String           @default("#000000")
+  borderStyle     String           @default("squircle")
+  summary         String?
+  firstName       String?
+  lastName        String?
+  jobTitle        String?
+  city            String?
+  country         String?
+  phone           String?
+  email           String?
+  workExperiences WorkExperience[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  //renaming to resumes instead of Resume
   @@map("resumes") //for naming convention for tables in postgres (lower case and plural so table wont be called Resume intead "resumes")
+}
+
+model WorkExperience {
+  id String @id @default(cuid())
+
+  position    String?
+  company     String?
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+
+  resumeId String
+  resume   Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade) //this means the field resumeId in out work experience model will be the same as id field in the Resume model (as mentioned in references array)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("work_experiences")
 }
