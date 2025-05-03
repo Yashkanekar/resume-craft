@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Badge } from "./ui/badge";
 import useDimensions from "@/hooks/useDimensions";
+import { BorderStyles } from "@/app/(main)/editor/BorderStyleButton";
 
 interface ResumePreviewProps {
   resumeData: ResumeValues;
@@ -62,8 +63,8 @@ function PersonalInfoHeader({ resumeData }: ResumeSectionProps) {
     country,
     phone,
     email,
-    // colorHex,
-    // borderStyle,
+    colorHex,
+    borderStyle,
   } = resumeData;
 
   const [photoSrc, setPhotoSrc] = useState(photo instanceof File ? "" : photo);
@@ -84,31 +85,31 @@ function PersonalInfoHeader({ resumeData }: ResumeSectionProps) {
           height={100}
           alt="Author photo"
           className="aspect-square object-cover"
-          //   style={{
-          //     borderRadius:
-          //       borderStyle === BorderStyles.SQUARE
-          //         ? "0px"
-          //         : borderStyle === BorderStyles.CIRCLE
-          //           ? "9999px"
-          //           : "10%",
-          //   }}
+            style={{
+              borderRadius:
+                borderStyle === BorderStyles.SQUARE
+                  ? "0px"
+                  : borderStyle === BorderStyles.CIRCLE
+                    ? "9999px"
+                    : "10%",
+            }}
         />
       )}
       <div className="space-y-2.5">
         <div className="space-y-1">
           <p
             className="text-3xl font-bold"
-            // style={{
-            //   color: colorHex,
-            // }}
+            style={{
+              color: colorHex,
+            }}
           >
             {firstName} {lastName}
           </p>
           <p
             className="font-medium"
-            // style={{
-            //   color: colorHex,
-            // }}
+            style={{
+              color: colorHex,
+            }}
           >
             {jobTitle}
           </p>
@@ -126,7 +127,7 @@ function PersonalInfoHeader({ resumeData }: ResumeSectionProps) {
 }
 
 function SummarySection({ resumeData }: ResumeSectionProps) {
-  const { summary } = resumeData;
+  const { summary,colorHex } = resumeData;
 
   if (!summary) return null;
 
@@ -134,16 +135,16 @@ function SummarySection({ resumeData }: ResumeSectionProps) {
     <>
       <hr
         className="border-2"
-        // style={{
-        //   borderColor: colorHex,
-        // }}
+        style={{
+          borderColor: colorHex,
+        }}
       />
       <div className="break-inside-avoid space-y-3">
         <p
           className="text-lg font-semibold"
-          //   style={{
-          //     color: colorHex,
-          //   }}
+            style={{
+              color: colorHex,
+            }}
         >
           Professional profile
         </p>
@@ -154,7 +155,7 @@ function SummarySection({ resumeData }: ResumeSectionProps) {
 }
 
 function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
-  const { workExperiences } = resumeData;
+  const { workExperiences,colorHex } = resumeData;
 
   const workExperiencesNotEmpty = workExperiences?.filter(
     (exp) => Object.values(exp).filter(Boolean).length > 0,
@@ -166,16 +167,16 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
     <>
       <hr
         className="border-2"
-        // style={{
-        //   borderColor: colorHex,
-        // }}
+        style={{
+          borderColor: colorHex,
+        }}
       />
       <div className="space-y-3">
         <p
           className="text-lg font-semibold"
-          //   style={{
-          //     color: colorHex,
-          //   }}
+            style={{
+              color: colorHex,
+            }}
         >
           Work experience
         </p>
@@ -183,9 +184,9 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
           <div key={index} className="break-inside-avoid space-y-1">
             <div
               className="flex items-center justify-between text-sm font-semibold"
-              //   style={{
-              //     color: colorHex,
-              //   }}
+                style={{
+                  color: colorHex,
+                }}
             >
               <span>{exp.position}</span>
               {exp.startDate && (
@@ -205,7 +206,7 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
 }
 
 function EducationSection({ resumeData }: ResumeSectionProps) {
-  const { educations } = resumeData;
+  const { educations,colorHex } = resumeData;
 
   const educationsNotEmpty = educations?.filter(
     (edu) => Object.values(edu).filter(Boolean).length > 0,
@@ -217,16 +218,16 @@ function EducationSection({ resumeData }: ResumeSectionProps) {
     <>
       <hr
         className="border-2"
-        // style={{
-        //   borderColor: colorHex,
-        // }}
+        style={{
+          borderColor: colorHex,
+        }}
       />
       <div className="space-y-3">
         <p
           className="text-lg font-semibold"
-          //   style={{
-          //     color: colorHex,
-          //   }}
+            style={{
+              color: colorHex,
+            }}
         >
           Education
         </p>
@@ -234,9 +235,9 @@ function EducationSection({ resumeData }: ResumeSectionProps) {
           <div key={index} className="break-inside-avoid space-y-1">
             <div
               className="flex items-center justify-between text-sm font-semibold"
-              //   style={{
-              //     color: colorHex,
-              //   }}
+                style={{
+                  color: colorHex,
+                }}
             >
               <span>{edu.degree}</span>
               {edu.startDate && (
@@ -255,7 +256,7 @@ function EducationSection({ resumeData }: ResumeSectionProps) {
 }
 
 function SkillsSection({ resumeData }: ResumeSectionProps) {
-  const { skills } = resumeData;
+  const { skills ,colorHex, borderStyle} = resumeData;
 
   if (!skills?.length) return null;
 
@@ -263,16 +264,16 @@ function SkillsSection({ resumeData }: ResumeSectionProps) {
     <>
       <hr
         className="border-2"
-        // style={{
-        //   borderColor: colorHex,
-        // }}
+        style={{
+          borderColor: colorHex,
+        }}
       />
       <div className="break-inside-avoid space-y-3">
         <p
           className="text-lg font-semibold"
-          //   style={{
-          //     color: colorHex,
-          //   }}
+            style={{
+              color: colorHex,
+            }}
         >
           Skills
         </p>
@@ -281,15 +282,15 @@ function SkillsSection({ resumeData }: ResumeSectionProps) {
             <Badge
               key={index}
               className="rounded-md bg-black text-white hover:bg-black"
-              //   style={{
-              //     backgroundColor: colorHex,
-              //     borderRadius:
-              //       borderStyle === BorderStyles.SQUARE
-              //         ? "0px"
-              //         : borderStyle === BorderStyles.CIRCLE
-              //           ? "9999px"
-              //           : "8px",
-              //   }}
+                style={{
+                  backgroundColor: colorHex,
+                  borderRadius:
+                    borderStyle === BorderStyles.SQUARE
+                      ? "0px"
+                      : borderStyle === BorderStyles.CIRCLE
+                        ? "9999px"
+                        : "8px",
+                }}
             >
               {skill}
             </Badge>
