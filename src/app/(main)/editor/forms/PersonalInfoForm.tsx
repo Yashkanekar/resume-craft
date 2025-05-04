@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { EditorFormProps } from "@/lib/types";
 import { personalInfoSchema, PersonalInfoValues } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 export default function PersonalInfoForm({
@@ -39,6 +39,9 @@ export default function PersonalInfoForm({
     });
     return unsubscribe;
   }, [form, resumeData, setResumeData]);
+
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
