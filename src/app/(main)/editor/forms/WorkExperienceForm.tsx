@@ -12,11 +12,32 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EditorFormProps } from "@/lib/types";
 import { workExperienceSchema, WorkExperienceValues } from "@/lib/validation";
+import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GripHorizontal } from "lucide-react";
 import { useEffect } from "react";
 import { useFieldArray, useForm, UseFormReturn } from "react-hook-form";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
+
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { CSS } from "@dnd-kit/utilities";
+
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 export default function WorkExperienceForm({
   resumeData,
@@ -42,10 +63,28 @@ export default function WorkExperienceForm({
     return unsubscribe;
   }, [form, resumeData, setResumeData]);
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control: form.control,
     name: "workExperiences",
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((field) => field.id === active.id);
+      const newIndex = fields.findIndex((field) => field.id === over.id);
+      move(oldIndex, newIndex); // this line is responsible for letting react hook form know about the change in pos/ordering
+      return arrayMove(fields, oldIndex, newIndex); // this line is responsible for actually moving the items in the array using dnd-kit
+    }
+  }
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
@@ -57,16 +96,27 @@ export default function WorkExperienceForm({
       </div>
       <Form {...form}>
         <form className="space-y-3">
-          {fields.map((field, index) => (
-            <WorkExperienceItem
-              id={field.id}
-              key={field.id}
-              index={index}
-              form={form}
-              remove={remove}
-            />
-          ))}
-
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+            modifiers={[restrictToVerticalAxis]}
+          >
+            <SortableContext
+              items={fields}
+              strategy={verticalListSortingStrategy}
+            >
+              {fields.map((field, index) => (
+                <WorkExperienceItem
+                  id={field.id}
+                  key={field.id}
+                  index={index}
+                  form={form}
+                  remove={remove}
+                />
+              ))}
+            </SortableContext>
+          </DndContext>
           <div className="flex justify-center">
             <Button
               type="button"
@@ -102,11 +152,34 @@ function WorkExperienceItem({
   index,
   remove,
 }: WorkExperienceItemProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
   return (
-    <div className="space-y-3 rounded-md border bg-background p-3">
+    <div
+      className={cn(
+        "space-y-3 rounded-md border bg-background p-3",
+        isDragging && "relative z-50 cursor-grab shadow-xl",
+      )}
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+    >
       <div className="flex justify-between gap-2">
         <span className="font-semibold">Work experience {index + 1}</span>
-        <GripHorizontal className="size-5 cursor-grab text-muted-foreground focus:outline-none" />
+        <GripHorizontal
+          className="size-5 cursor-grab text-muted-foreground focus:outline-none"
+          {...attributes}
+          {...listeners}
+        />
       </div>
 
       <FormField
