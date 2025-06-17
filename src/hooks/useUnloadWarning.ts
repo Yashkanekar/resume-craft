@@ -13,5 +13,5 @@ export default function useUnloadWarning(condition = true) {
     window.addEventListener("beforeunload", listener);
 
     return () => window.removeEventListener("beforeunload", listener);
-  }, [condition]);
+  }, [condition]) ;
 }
