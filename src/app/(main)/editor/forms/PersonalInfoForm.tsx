@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -41,7 +42,6 @@ export default function PersonalInfoForm({
   }, [form, resumeData, setResumeData]);
 
   const photoInputRef = useRef<HTMLInputElement>(null);
-  
 
   return (
     <div className="mx-auto max-w-xl space-y-6">
@@ -69,6 +69,19 @@ export default function PersonalInfoForm({
                       }}
                     />
                   </FormControl>
+
+                  <Button
+                    variant="secondary"
+                    type="button"
+                    onClick={() => {
+                      fieldValues.onChange(null);
+                      if (photoInputRef.current) {
+                        photoInputRef.current.value = "";
+                      }
+                    }}
+                  >
+                    Remove
+                  </Button>
                 </div>
                 <FormMessage />
               </FormItem>

@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
 }
 
 // prisma/schema.prisma
@@ -14,37 +9,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
-
 model User {
-  id             String    @id @default(cuid())
-  name           String?
-  email          String?   @unique
-  emailVerified  DateTime?
-  image          String?
-  accounts       Account[]
-  sessions       Session[]
-  resumes        Resume[]  @relation("UserResumes")
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  resumes       Resume[]  @relation("UserResumes")
 }
 
 model Account {
-  id                 String   @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("accounts") //for naming convention for tables in postgres (lower case and plural so table wont be called Account intead "accounts")
 }
 
 model Session {
@@ -54,6 +47,8 @@ model Session {
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }
 
 model VerificationToken {
@@ -62,12 +57,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 model Resume {
   id     String @id @default(cuid()) //cuid for automatically generating ids
   userId String
-  user      User     @relation(fields: [userId], references: [id], name: "UserResumes")
+  user   User   @relation(fields: [userId], references: [id], name: "UserResumes")
 
   title       String?
   description String?
@@ -86,7 +82,6 @@ model Resume {
   workExperiences WorkExperience[]
   educations      Education[]
   skills          String[]
-
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

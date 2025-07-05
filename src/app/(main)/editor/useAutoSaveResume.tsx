@@ -34,11 +34,12 @@ export default function useAutoSaveResume(resumeData: ResumeValues) {
 
         const newData = structuredClone(debouncedResumeData);
         // handle the photo field differently
+
         const updatedResume = await saveResume({
           ...newData,
           // if the photo hasn't changed, don't send it to the server
-          ...(JSON.stringify(lastSavedData.photo?.toString()) ===
-            JSON.stringify(newData.photo?.toString()) && {
+          ...(JSON.stringify(lastSavedData.photo, fileReplacer) ===
+            JSON.stringify(newData.photo, fileReplacer) && {
             photo: undefined,
           }),
           id: resumeId,
