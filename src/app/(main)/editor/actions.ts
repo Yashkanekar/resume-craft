@@ -1,10 +1,7 @@
 "use server";
 
-// import { canCreateResume, canUseCustomizations } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-// import { getUserSubscriptionLevel } from "@/lib/subscription";
 import { resumeSchema, ResumeValues } from "@/lib/validation";
-// import { auth } from "@clerk/nextjs/server";
 import { auth } from "@/lib/auth";
 import { del, put } from "@vercel/blob";
 import path from "path";
@@ -18,7 +15,7 @@ export async function saveResume(values: ResumeValues) {
     resumeSchema.parse(values);
 
   const session = await auth();
-  console.log("session", session);
+  // console.log("session", session);
   const userId = session?.user?.id;
 
   if (!userId) {

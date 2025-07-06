@@ -5,6 +5,7 @@ import { ResumeValues } from "@/lib/validation";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { saveResume } from "./actions";
+import { fileReplacer } from "@/lib/utils";
 
 export default function useAutoSaveResume(resumeData: ResumeValues) {
   const searchParams = useSearchParams();
@@ -84,8 +85,8 @@ export default function useAutoSaveResume(resumeData: ResumeValues) {
       }
     }
 
-    console.log("debouncedResumeData", JSON.stringify(debouncedResumeData));
-    console.log("lastSavedData", JSON.stringify(lastSavedData));
+    // console.log("debouncedResumeData", JSON.stringify(debouncedResumeData));
+    // console.log("lastSavedData", JSON.stringify(lastSavedData));
 
     const hasUnsavedChanges =
       JSON.stringify(debouncedResumeData) !== JSON.stringify(lastSavedData);

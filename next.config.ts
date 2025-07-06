@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "svacfwphypiqogvu.public.blob.vercel-storage.com",
+      },
     ],
   },
   experimental: {
