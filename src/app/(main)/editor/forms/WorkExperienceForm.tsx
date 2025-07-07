@@ -38,6 +38,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import GenerateWorkExperienceButton from "./GenerateWorkExperienceButton";
 
 export default function WorkExperienceForm({
   resumeData,
@@ -181,7 +182,13 @@ function WorkExperienceItem({
           {...listeners}
         />
       </div>
-
+      <div className="flex justify-center">
+        <GenerateWorkExperienceButton
+          onWorkExperienceGenerated={(exp) =>
+            form.setValue(`workExperiences.${index}`, exp)
+          }
+        />
+      </div>
       <FormField
         control={form.control}
         name={`workExperiences.${index}.position`}
