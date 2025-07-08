@@ -8,6 +8,16 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  openGraph: {
+    images: [
+      {
+        url: '/opengraph-image.png', // public path
+        width: 1200,
+        height: 630,
+        alt: 'Open Graph Image',
+      },
+    ],  
+  },
   title: {
     template: "%s - AI Resume Builder",
     absolute: "AI Resume Builder",
