@@ -25,7 +25,7 @@ export default async function Page({ searchParams }: PageProps) {
   }
 
   const noOfAiGenerations = await getUserAiGenerationsCount(userId);
-  console.log("No of AI generations:", noOfAiGenerations);
+  // console.log("No of AI generations:", noOfAiGenerations);
 
   const resumeToEdit = resumeId
     ? await prisma.resume.findUnique({

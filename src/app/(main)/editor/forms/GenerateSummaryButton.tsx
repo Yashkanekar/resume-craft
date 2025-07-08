@@ -18,10 +18,10 @@ export default function GenerateSummaryButton({
 }: GenerateSummaryButtonProps) {
   const { toast } = useToast();
   const { aiGenerationsCount, setAiGenerationsCount } = useAiGenerationsCount();
-  console.log(
-    "No of AI generations: inside the button generate summary",
-    aiGenerationsCount,
-  );
+  // console.log(
+  //   "No of AI generations: inside the button generate summary",
+  //   aiGenerationsCount,
+  // );
 
   const [loading, setLoading] = useState(false);
 
