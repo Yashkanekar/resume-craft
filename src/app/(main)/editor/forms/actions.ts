@@ -10,12 +10,26 @@ import {
   WorkExperience,
 } from "@/lib/validation";
 import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function generateSummary(input: GenerateSummaryInput) {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {
     throw new Error("Unauthorized");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { aiGenerationCount: true },
+  });
+  console.log("user", user);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  if (user.aiGenerationCount > 20) {
+    throw new Error("This user has reached 20 AI generations.");
   }
 
   const { jobTitle, workExperiences, educations, skills } =
@@ -77,6 +91,12 @@ export async function generateSummary(input: GenerateSummaryInput) {
 
   if (!aiResponse) {
     throw new Error("Failed to generate AI response");
+  } else {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { aiGenerationCount: { increment: 1 } },
+    });
+    revalidatePath("/editor");
   }
 
   return aiResponse;
@@ -91,6 +111,16 @@ export async function generateWorkExperience(
 
   if (!userId) {
     throw new Error("Unauthorized");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { aiGenerationCount: true },
+  });
+  console.log("user", user);
+
+  if ((user?.aiGenerationCount ?? 0) > 20) {
+    throw new Error("This user has reached 20 AI generations.");
   }
 
   const { description } = generateWorkExperienceSchema.parse(input);
@@ -129,9 +159,13 @@ export async function generateWorkExperience(
 
   if (!aiResponse) {
     throw new Error("Failed to generate AI response");
+  } else {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { aiGenerationCount: { increment: 1 } },
+    });
+    revalidatePath("/editor");
   }
-
-  console.log("aiResponse", aiResponse);
 
   return {
     position: aiResponse.match(/Job title: (.*)/)?.[1] || "",

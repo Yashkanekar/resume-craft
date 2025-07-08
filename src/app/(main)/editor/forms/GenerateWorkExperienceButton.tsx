@@ -29,6 +29,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { generateWorkExperience } from "./actions";
+import { useAiGenerationsCount } from "../../AiGenerationsCountProvider";
 
 interface GenerateWorkExperienceButtonProps {
   onWorkExperienceGenerated: (workExperience: WorkExperience) => void;
@@ -42,14 +43,14 @@ export default function GenerateWorkExperienceButton({
   return (
     <>
       <Button
-        variant="outline"
+        variant="ai"
         type="button"
         onClick={() => {
           setShowInputDialog(true);
         }}
       >
         <WandSparklesIcon className="size-4" />
-        Smart fill (AI)
+        Auto Fill Work Experience using AI
       </Button>
       <InputDialog
         open={showInputDialog}
@@ -75,6 +76,7 @@ function InputDialog({
   onWorkExperienceGenerated,
 }: InputDialogProps) {
   const { toast } = useToast();
+  const { aiGenerationsCount, setAiGenerationsCount } = useAiGenerationsCount();
 
   const form = useForm<GenerateWorkExperienceInput>({
     resolver: zodResolver(generateWorkExperienceSchema),
@@ -84,10 +86,20 @@ function InputDialog({
   });
 
   async function onSubmit(input: GenerateWorkExperienceInput) {
+    if (aiGenerationsCount >= 6) {
+      toast({
+        variant: "destructive",
+        description: "You've reached your AI generation limit.",
+      });
+      return;
+    }
+    setAiGenerationsCount((prevCount: number): number => prevCount + 1);
+
     try {
       const response = await generateWorkExperience(input);
       onWorkExperienceGenerated(response);
     } catch (error) {
+      setAiGenerationsCount((prevCount) => prevCount - 1);
       console.error(error);
       toast({
         variant: "destructive",
@@ -127,7 +139,13 @@ function InputDialog({
             />
             <LoadingButton type="submit" loading={form.formState.isSubmitting}>
               Generate
+              
             </LoadingButton>
+            <p className="mt-2 text-xs text-muted-foreground">
+                You have used {aiGenerationsCount} out of 20 AI generations.
+                <br />
+                After 20 generations, auto generation using AI will be disabled.
+              </p>
           </form>
         </Form>
       </DialogContent>

@@ -3,6 +3,8 @@ import { resumeDataInclude } from "@/lib/types";
 import { Metadata } from "next";
 import ResumeEditor from "./ResumeEditor";
 import { auth } from "@/lib/auth";
+import { getUserAiGenerationsCount } from "@/lib/aiGenerations";
+import { AiGenerationsCountProvider } from "../AiGenerationsCountProvider";
 
 interface PageProps {
   searchParams: Promise<{ resumeId?: string }>;
@@ -22,6 +24,9 @@ export default async function Page({ searchParams }: PageProps) {
     return null;
   }
 
+  const noOfAiGenerations = await getUserAiGenerationsCount(userId);
+  console.log("No of AI generations:", noOfAiGenerations);
+
   const resumeToEdit = resumeId
     ? await prisma.resume.findUnique({
         where: { id: resumeId, userId },
@@ -29,5 +34,9 @@ export default async function Page({ searchParams }: PageProps) {
       })
     : null;
 
-  return <ResumeEditor resumeToEdit={resumeToEdit} />;
+  return (
+    <AiGenerationsCountProvider noOfAiGenerations={noOfAiGenerations}>
+      <ResumeEditor resumeToEdit={resumeToEdit} />
+    </AiGenerationsCountProvider>
+  );
 }

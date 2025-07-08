@@ -16,9 +16,9 @@ export default function Home() {
           className="mx-auto md:ms-0"
         />
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-          Create the{" "}
+          Create your{" "}
           <span className="inline-block bg-gradient-to-r from-blue-400 to-blue-300 bg-clip-text text-transparent">
-            Perfect Resume
+            Dream Resume
           </span>{" "}
           in Minutes
         </h1>
