@@ -1,11 +1,9 @@
-import { auth } from "@/lib/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 // Define public routes (accessible without authentication)
 const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
 export async function middleware(req: NextRequest) {
-  const session = await auth();
   const { pathname } = req.nextUrl;
 
   // Allow public routes without authentication
@@ -14,7 +12,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // If no session, redirect to login
-  if (!session) {
+
+  const token =
+    req.cookies.get("__Secure-authjs.session-token") ??
+    req.cookies.get("authjs.session-token");
+
+  if (!token) {
     return NextResponse.redirect(new URL("/api/auth/signin", req.url)); //req.url contains the full original req url and new URL just create a new url object and the path adjusts accordingly to full og req(domain)/login
   }
 
